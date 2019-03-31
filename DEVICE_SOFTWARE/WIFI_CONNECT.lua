@@ -33,14 +33,11 @@ function wifi_connect()
    print("Connected . enjoy :) ")
    print(wifi.sta.getip())
    tmr.stop(timerID)
+   print ("Go to collect data ...")
+   dofile("USER_INTERFACE.lua")
  end
 end
 
 
 
 tmr.alarm(timerID, timerDelay, timerMode, function() wifi_connect() end) -- send data every 10s
-
-
-if(connected == true) then
- dofile("USER_INTERFACE.lua")
-end 
