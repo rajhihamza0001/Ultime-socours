@@ -5,29 +5,29 @@ PressionValue = 0
 
  while true do
    PressionValue = adc.read(0)
-   print("pression value =")
-   
-   if   (PressionValue >10 )then 
+   A=(220/(220+PressionValue))*3
+   if   (A >1 )then 
       gpio.write(3,gpio.LOW) 
-      tmr.delay(1000000)
-     print("pression value =")
-     print( PressionValue)
+      tmr.delay(100000)
+    print("pression value =")
+    
+     print(A)
    
 gpio.write(2,gpio.HIGH)
- tmr.delay(1000000)
+ tmr.delay(100000)
 gpio.write(2,gpio.LOW)
-tmr.delay(1000000)
+tmr.delay(100000)
 
 else 
 gpio.write(2,gpio.LOW)
-   tmr.delay(1000000)
+   tmr.delay(100000)
 print("pression value =")
- print( PressionValue)
+ print(A)
 
 gpio.write(3,gpio.HIGH)
- tmr.delay(1000000)
+ tmr.delay(100000)
 gpio.write(3,gpio.LOW)
-tmr.delay(1000000)
+tmr.delay(100000)
 end 
 
 end
