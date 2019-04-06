@@ -1,33 +1,60 @@
-  gpio.mode(3,gpio.OUTPUT)
- gpio.mode(2,gpio.OUTPUT)
- 
-PressionValue = 0
 
- while true do
-   PressionValue = adc.read(0)
-   A=(220/(220+PressionValue))*3
-   if   (A >1 )then 
-      gpio.write(3,gpio.LOW) 
-      tmr.delay(100000)
-    print("pression value =")
-    
-     print(A)
-   
-gpio.write(2,gpio.HIGH)
- tmr.delay(100000)
-gpio.write(2,gpio.LOW)
-tmr.delay(100000)
+GREEN_LED = 3 
+RED_LED = 2
 
-else 
-gpio.write(2,gpio.LOW)
-   tmr.delay(100000)
-print("pression value =")
- print(A)
+R1_value = 220
+VDD = 3.0  -- Input voltage = 3.3 volt 
 
-gpio.write(3,gpio.HIGH)
- tmr.delay(100000)
-gpio.write(3,gpio.LOW)
-tmr.delay(100000)
+
+function SensorsInit()
+
+ gpio.mode(GREEN_LED,gpio.OUTPUT)
+ gpio.mode(RED_LED,gpio.OUTPUT)
+
 end 
 
-end
+
+function PressionRead()
+
+ Voltage = adc.read(0)
+ PressionValue = (R1_value/(R1_value+Voltage))* VDD
+ print("pression value =" .. PressionValue)
+ return PressionValue
+end 
+
+
+function StorePression()
+
+  Pr = PressionRead()
+  -- open 'init.lua' in 'a+' mode
+  fd = file.open("init.lua", "a+")
+  if fd then
+    -- write 'pression value ' to the end of the file
+    fd:write(Pr)
+    fd:close()
+  end
+
+end 
+
+function GREEN_LED_BLINK(BlinkNumber, TimeOut)
+
+   for i = 1,BlinkNumber do
+      gpio.write(GREEN_LED,gpio.HIGH)
+      tmr.delay(TimeOut)
+      gpio.write(GREEN_LED,gpio.LOW)
+      tmr.delay(TimeOut)
+   end
+   
+end 
+
+function RED_LED_BLINK(BlinkNumber, TimeOut)
+
+   for i = 1,BlinkNumber do
+      gpio.write(RED_LED,gpio.HIGH)
+      tmr.delay(TimeOut)
+      gpio.write(RED_LED,gpio.LOW)
+      tmr.delay(TimeOut)
+   end
+   
+end 
+
