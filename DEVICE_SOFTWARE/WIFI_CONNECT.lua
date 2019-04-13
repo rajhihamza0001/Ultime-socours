@@ -6,9 +6,9 @@
 -- STEP 3 : Run WIFI connect Loop until connect status = 5
 -- STEP 4 : Branch application to collect data process --
 
-print ("Start WIFI CONNECT process ...")
 
-connected = false 
+
+ConnectionState = false 
 
 
 -- Wifi credentials
@@ -33,11 +33,16 @@ function wifi_connect()
    print("Connected . enjoy :) ")
    print(wifi.sta.getip())
    tmr.stop(timerID)
-   print ("Go to collect data ...")
-   dofile("USER_INTERFACE.lua")
+   ConnectionState = true 
  end
 end
 
+function IsConnected ()
+ return ConnectionState 
+end
 
+function StartWifiConnect()
+  print ("Start WIFI CONNECT process ...")
+  tmr.alarm(timerID, timerDelay, timerMode, function() wifi_connect() end) -- send data every 10s
 
-tmr.alarm(timerID, timerDelay, timerMode, function() wifi_connect() end) -- send data every 10s
+end 

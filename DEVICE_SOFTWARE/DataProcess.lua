@@ -24,6 +24,7 @@ function Init_Logs(fileName)
   
   if fd then
     print("[File] : "..fileName.." correctly created and opened ")
+    file.close()
   else
     print("[Error] :  In try to open file")
   end
@@ -45,7 +46,8 @@ function Save_Data_Line(Storingfile, PressureValue)
   
   fd = file.open(Storingfile, "a+")
   if fd then
-  file.writeline(InformationLine) 
+    file.writeline(InformationLine) 
+    file.close()
   else print("[Error] : In try to storing InformationLine ")
   end 
   return InformationLine
@@ -67,7 +69,7 @@ function StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
 
   local timerID = 3
   tmr.alarm(timerID, DataAcquisitionPeriod, 1, function()
-    StartDataprocess("logs.txt") 
+    StartDataprocess(AcquisitionFileName) 
   end) -- log Pressure every DataAcquisitionPeriod period 
   
   

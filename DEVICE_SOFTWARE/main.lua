@@ -1,21 +1,20 @@
 -- main 
 
 require "DataProcess"
+require "WIFI_CONNECT"
 
 
-AcquisitionFileName = "Logs.txt"
+AcquisitionFileName = "logs.txt"
 DataAcquisitionPeriod = 5000 
-
-
 
 
 -- This function is used to Initialize button and LED's perih I/O 
 
 BUTTON = 1
 
-GreenLED  = 4  -- This LED is used to indicate that the system is correctly "running"
+GreenLED  = 2  -- This LED is used to indicate that the system is correctly "running"
 RedLED    = 3  -- This LED is used to indicate to user that the system is nicely "powered " 
-OrangeLED = 2  -- this LED is used to inform user about the WIFI connection status
+OrangeLED = 5  -- this LED is used to inform user about the WIFI connection status
 					-- LED OFF : system is not connected to AP.
 					-- LED BLINK every one second : system try to connect to AP.
 					-- LED BLINK every 60 second  : system is correctly connected to AP.
@@ -40,7 +39,7 @@ end
 function Button_Init()
 
   gpio.mode(BUTTON,gpio.INT)
-  trig(BUTTON, "down", startSystem)
+  gpio.trig(BUTTON, "down", startSystem)
 
 end 
 
@@ -62,11 +61,32 @@ function LED_Blink(LED, NumberOfBlink , BlinkDelay)
 
 end  
 
+function StartUserInterface()
+
+  tmr.alarm(0, 100, timerMode, function() 
+
+    -- chekc if the device is connected to wifi before starting user interface 
+    if( IsConnected() ) then
+     
+      print("starting user interface ")
+      dofile("USER_INTERFACE.lua")
+      tmr.stop(0)
+      
+    end 
+  end) -- send data every 10s
+
+end 
+
+
 function startSystem()
 
  print("system is started ... ")
  LED_Blink(GreenLED , 3, 1000) -- Blink green led 3 time each on second 
+ 
+ StartWifiConnect()
  StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
+ StartUserInterface()
+ gpio.mode(BUTTON , gpio.OUTPUT)
 
 end 
 
