@@ -3,12 +3,17 @@
 -- Example of InformationLine: year / month /  day - hour : min : sec  - PressureValue
 -- you can use the following web site to convert epoch time to calendar https://www.epochconverter.com/ 
 
+R1_value = 220
+VDD = 3.0  -- Input voltage = 3.3 volt 
 
 -- This function is used to Get pressure value 
 function GetPressureValue()
 
-
-  return 24
+ Voltage = adc.read(0)
+ PressionValue = (R1_value/(R1_value+Voltage))* VDD
+ print("pression value =" .. PressionValue)
+ return PressionValue
+ 
 end 
 
 
@@ -16,10 +21,9 @@ end
 function Init_Logs(fileName)  
   -- open 'init.lua', print the first line.
   fd = file.open(fileName, "a+")
+  
   if fd then
     print("[File] : "..fileName.." correctly created and opened ")
-    fd:close(); fd = nil
-    
   else
     print("[Error] :  In try to open file")
   end
@@ -32,17 +36,18 @@ function Save_Data_Line(Storingfile, PressureValue)
   InformationLine = ""
   
   -- Get and append date-time to information line 
-  tm = rtctime.epoch2cal(rtctime.get())
-  print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
-  InformationLine = InformationLine .. string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"])
+--  tm = rtctime.epoch2cal(rtctime.get())
+--  print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
+    InformationLine = InformationLine .. string.format("%04d/%02d/%02d %02d:%02d:%02d", "2019", "04", "13", "15", "50", "22")
   
   -- Append pressure value to information line 
   InformationLine = InformationLine .. " - " .. PressureValue 
   
-  if fd then Storingfile.writeline(InformationLine) 
+  fd = file.open(Storingfile, "a+")
+  if fd then
+  file.writeline(InformationLine) 
   else print("[Error] : In try to storing InformationLine ")
   end 
-  
   return InformationLine
 end 
 
@@ -57,12 +62,12 @@ end
 -- This function is used to start reading and storing pressure values in log file 
 function StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
 
-  file = Init_Logs(AcquisitionFileName)
-  if(file ~= true ) then return 0 end 
+  Myfile = Init_Logs(AcquisitionFileName)
+  if(Myfile ~= true ) then return 0 end 
 
   local timerID = 3
-  tmr.alarm(timerID, DataAcquisitionPeriod, tmr.ALARM_SINGLE, function()
-    StartDataprocess(file) 
+  tmr.alarm(timerID, DataAcquisitionPeriod, 1, function()
+    StartDataprocess("logs.txt") 
   end) -- log Pressure every DataAcquisitionPeriod period 
   
   
@@ -72,13 +77,9 @@ end
 -- This function is used to stop data Acquisition process
 function StopDataAcquisition()
 
-    mytimer:Stop()
-	fd:close(); fd = nil
+    local timerID = 3
+    tmr.stop(3)
+	file.close()
 
 end 
 
-
-mytimer = tmr.create()
-mytimer:register(10000, tmr.ALARM_AUTO, function() print("hey there") end)
-mytimer:interval(3000) -- actually, 3 seconds is better!
-mytimer:start()
