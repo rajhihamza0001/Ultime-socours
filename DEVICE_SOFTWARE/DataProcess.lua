@@ -20,6 +20,7 @@ end
 
 function Init_Logs(fileName)  
   -- open 'init.lua', print the first line.
+  file.remove(fileName)
   fd = file.open(fileName, "a+")
   
   if fd then

@@ -4,8 +4,8 @@ require "DataProcess"
 require "WIFI_CONNECT"
 
 
-AcquisitionFileName = "logs.txt"
-DataAcquisitionPeriod = 5000 
+AcquisitionFileName = "blogs.txt"
+DataAcquisitionPeriod = 10000 
 
 
 -- This function is used to Initialize button and LED's perih I/O 
@@ -83,9 +83,9 @@ function startSystem()
  print("system is started ... ")
  LED_Blink(GreenLED , 3, 1000) -- Blink green led 3 time each on second 
  
- StartWifiConnect()
+ --StartWifiConnect()
  StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
- StartUserInterface()
+ --StartUserInterface()
  gpio.mode(BUTTON , gpio.OUTPUT)
 
 end 
