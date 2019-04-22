@@ -5,16 +5,16 @@ require "WIFI_CONNECT"
 
 
 AcquisitionFileName = "blogs.txt"
-DataAcquisitionPeriod = 10000 
+DataAcquisitionPeriod = 2000 
 
 
 -- This function is used to Initialize button and LED's perih I/O 
 
-BUTTON = 1
+BUTTON = 2
 
-GreenLED  = 2  -- This LED is used to indicate that the system is correctly "running"
-RedLED    = 3  -- This LED is used to indicate to user that the system is nicely "powered " 
-OrangeLED = 5  -- this LED is used to inform user about the WIFI connection status
+GreenLED  = 5  -- This LED is used to indicate that the system is correctly "running"
+RedLED    = 6  -- This LED is used to indicate to user that the system is nicely "powered " 
+OrangeLED = 7  -- this LED is used to inform user about the WIFI connection status
 					-- LED OFF : system is not connected to AP.
 					-- LED BLINK every one second : system try to connect to AP.
 					-- LED BLINK every 60 second  : system is correctly connected to AP.
@@ -83,9 +83,12 @@ function startSystem()
  print("system is started ... ")
  LED_Blink(GreenLED , 3, 1000) -- Blink green led 3 time each on second 
  
- --StartWifiConnect()
+ StartWifiConnect()
+ 
+ Init_Logs(AcquisitionFileName) 
  StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
- --StartUserInterface()
+ 
+ StartUserInterface()
  gpio.mode(BUTTON , gpio.OUTPUT)
 
 end 

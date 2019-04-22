@@ -5,6 +5,7 @@
 
 R1_value = 220
 VDD = 3.0  -- Input voltage = 3.3 volt 
+InformationLine = ""
 
 -- This function is used to Get pressure value 
 function GetPressureValue()
@@ -21,36 +22,36 @@ end
 function Init_Logs(fileName)  
   -- open 'init.lua', print the first line.
   file.remove(fileName)
-  fd = file.open(fileName, "a+")
   
-  if fd then
+  if  file.open(fileName, "w") then
     print("[File] : "..fileName.." correctly created and opened ")
     file.close()
   else
     print("[Error] :  In try to open file")
   end
-  return fd
+  
 end 
 
 
 -- this function is used to store information line in file
 function Save_Data_Line(Storingfile, PressureValue) 
-  InformationLine = ""
-  
+    InformationLine = ""
   -- Get and append date-time to information line 
---  tm = rtctime.epoch2cal(rtctime.get())
---  print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
+  --  tm = rtctime.epoch2cal(rtctime.get())
+  --  print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
     InformationLine = InformationLine .. string.format("%04d/%02d/%02d %02d:%02d:%02d", "2019", "04", "13", "15", "50", "22")
-  
-  -- Append pressure value to information line 
-  InformationLine = InformationLine .. " - " .. PressureValue 
-  
-  fd = file.open(Storingfile, "a+")
-  if fd then
-    file.writeline(InformationLine) 
+    print("STEP1")
+    
+    -- Append pressure value to information line 
+    InformationLine =  InformationLine .. " - " .. PressureValue
+
+   if file.open(Storingfile, "a+") then
+    -- write 'foo bar' to the end of the file
+    file.writeline(InformationLine)
+    print("Pressure values is stored ")
     file.close()
-  else print("[Error] : In try to storing InformationLine ")
-  end 
+   end
+
   return InformationLine
 end 
 
@@ -65,8 +66,7 @@ end
 -- This function is used to start reading and storing pressure values in log file 
 function StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
 
-  Myfile = Init_Logs(AcquisitionFileName)
-  if(Myfile ~= true ) then return 0 end 
+  
 
   local timerID = 3
   tmr.alarm(timerID, DataAcquisitionPeriod, 1, function()
