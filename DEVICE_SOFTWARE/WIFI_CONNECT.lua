@@ -6,14 +6,9 @@
 -- STEP 3 : Run WIFI connect Loop until connect status = 5
 -- STEP 4 : Branch application to collect data process --
 
-
+require "Device_Config"
 
 ConnectionState = false 
-
-
--- Wifi credentials
-SSID = "yess" -- <========== Modify this!
-wifiPWD = "123456789" -- <========== Modify this!
 
 
 timerID = 2
@@ -28,6 +23,7 @@ function wifi_connect()
  wifi.sta.config(SSID,wifiPWD)
  wifi.sta.connect()
  wifiStat = wifi.sta.status()
+ LED_Blink(OrangeLED,2,LED_TryingToConnectDelay)
  if(wifiStat == 5) then  --State: Waiting for wifi
    connected = true
    print("Connected . enjoy :) ")
@@ -38,8 +34,21 @@ function wifi_connect()
 end
 
 function IsConnected ()
+ ConnectionState = false 
+ wifiStat = wifi.sta.status()
+ if(wifiStat == 5) then 
+   ConnectionState = true 
+ end 
  return ConnectionState 
 end
+
+function CheckWifiStatus()
+
+  if (IsConnected == false ) then 
+    StartWifiConnect()
+  end 
+
+end 
 
 function StartWifiConnect()
   print ("Start WIFI CONNECT process ...")

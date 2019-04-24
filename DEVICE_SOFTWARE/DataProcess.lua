@@ -71,6 +71,7 @@ function StartDataAcquisition(AcquisitionFileName, DataAcquisitionPeriod)
   local timerID = 3
   tmr.alarm(timerID, DataAcquisitionPeriod, 1, function()
     StartDataprocess(AcquisitionFileName) 
+    CheckWifiStatus()
   end) -- log Pressure every DataAcquisitionPeriod period 
   
   
